@@ -1,6 +1,6 @@
 # AboutYouDemo
 
-A new Flutter project.
+Demo application implementing parts of the BLoC pattern with RxDart.
 
 ## Getting Started
 
