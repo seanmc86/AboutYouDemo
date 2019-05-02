@@ -1,0 +1,1 @@
+enum ColorType { blue, gray, black, white, pink }
