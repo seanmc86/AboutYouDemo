@@ -14,15 +14,20 @@ class ProductTile extends StatelessWidget {
     final TextTheme baseTextTheme = Theme.of(context).textTheme;
     final Size screenSize = MediaQuery.of(context).size;
     final double itemWidth = screenSize.width * 0.4;
+    final double itemHeight = screenSize.width * 0.6;
+    final int labelLength = product.attributes.name.label.length;
 
     return Container(
         width: itemWidth,
-        height: itemWidth,
-        //TODO: Add better way of handling varying text lengths as it may clip image
+        height: itemHeight,
+        //TODO: Add better way of handling varying text lengths to show fuller text / no image clipping
         child: GridTile(
             footer: Column(children: <Widget>[
-              Text(product.attributes.brand.label,
-                  style: baseTextTheme.subtitle, textAlign: TextAlign.center),
+              Text(
+                '${product.attributes.name.label.substring(0, labelLength > 20 ? 20 : labelLength)} - ${product.attributes.brand.label}',
+                style: baseTextTheme.subtitle,
+                textAlign: TextAlign.center
+              ),
               Text(
                   Converters.currencyToStringLocalization(
                       product.priceRange.priceMin.currencyCode,
@@ -32,8 +37,7 @@ class ProductTile extends StatelessWidget {
             ]),
             child: Padding(
                 padding: EdgeInsets.only(
-                    top: Dimensions.stylePaddingM,
-                    bottom: Dimensions.stylePaddingL),
+                    bottom: Dimensions.stylePaddingXL),
                 child: FadeInImage.memoryNetwork(
                     placeholder: TransparentImage.kTransparentImage,
                     //TODO: Strip out hard-coded bits to a central config

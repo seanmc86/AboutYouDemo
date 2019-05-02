@@ -4,6 +4,7 @@ class Dimensions {
   static const double stylePaddingS = 12.0;
   static const double stylePaddingM = 16.0;
   static const double stylePaddingL = 48.0;
+  static const double stylePaddingXL = 60.0;
 
   // Font Sizes
   static const double emptyTextFont = 0.0;
