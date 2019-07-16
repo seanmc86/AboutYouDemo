@@ -82,6 +82,15 @@ class StringLocalizations {
     ColorType.pink: Constants.materialPink
   };
 
+  static Map<int, ResponseCode> get httpResponseMap => 
+  {
+    400: ResponseCode.BadRequest,
+    403: ResponseCode.Forbidden,
+    404: ResponseCode.NotFound,
+    429: ResponseCode.TooManyRequests,
+    500: ResponseCode.InternalServerError
+  };
+
   static String get retryText => Intl.message(
     'Try Again',
     args: [],
