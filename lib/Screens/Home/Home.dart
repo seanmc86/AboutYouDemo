@@ -1,4 +1,6 @@
 import 'package:AboutYouDemo/Blocs/BlocProvider.dart';
+import 'package:AboutYouDemo/Screens/Home/CarouselWidget/Carousel.dart';
+import 'package:AboutYouDemo/Screens/Settings/Settings.dart';
 import 'package:AboutYouDemo/Styles/Constants.dart';
 import 'package:AboutYouDemo/Styles/LayoutTheme.dart';
 import 'package:AboutYouDemo/Blocs/FilterBloc.dart';
@@ -115,6 +117,8 @@ class _HomeState extends State<Home> {
   }
 
   Widget gridView(BuildContext context, AsyncSnapshot snapshot) {
+    final AppBloc appBloc = BlocProvider.of<AppBloc>(context);
+    final useCarousel = false;
 
     loading = false;
     final ProductBloc productBloc = BlocProvider.of<ProductBloc>(context);
@@ -127,30 +131,34 @@ class _HomeState extends State<Home> {
             : snapshot.hasError
                 ? Center(
                     child: FlatButton.icon(
+                      key: Key('reset'),
                       icon: Icon(Icons.refresh),
                       label: Text(StringLocalizations.retryText),
                       onPressed: productBloc.resetState,
                     ),
                   )
-                : GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 1,
-                      mainAxisSpacing: Dimensions.stylePaddingS,
-                      crossAxisSpacing: Dimensions.stylePaddingS,
-                    ),
-                    controller: _gridViewScroller,
-                    primary: false,
-                    padding: EdgeInsets.only(
-                        left: Dimensions.stylePaddingS,
-                        right: Dimensions.stylePaddingS,
-                        top: Dimensions.stylePaddingS,
-                        bottom: 0.0),
-                    shrinkWrap: true,
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return ProductTile(product: snapshot.data[index]);
-                    }));
+                : useCarousel
+                    ? Carousel(products: snapshot.data)
+                    : GridView.builder(
+                        key: Key('gridbuilder'),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 1,
+                          mainAxisSpacing: Dimensions.stylePaddingS,
+                          crossAxisSpacing: Dimensions.stylePaddingS,
+                        ),
+                        controller: _gridViewScroller,
+                        primary: false,
+                        padding: EdgeInsets.only(
+                            left: Dimensions.stylePaddingS,
+                            right: Dimensions.stylePaddingS,
+                            top: Dimensions.stylePaddingS,
+                            bottom: 0.0),
+                        shrinkWrap: true,
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return ProductTile(product: snapshot.data[index]);
+                        }));
 
     return gridBuilder;
   }
