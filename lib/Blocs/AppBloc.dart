@@ -6,8 +6,6 @@ class AppBloc implements BlocBase {
   ProductBloc _productBloc;
   FilterBloc _filterBloc;
 
-  // ### AppBloc can coordinate more inter-bloc actions once app grows, for now mostly unused
-
   AppBloc() {
     _productBloc = ProductBloc();
     _filterBloc = FilterBloc();
@@ -18,6 +16,7 @@ class AppBloc implements BlocBase {
 
   @override
   void dispose() {
+    print('Disposing blocs');
     _productBloc.dispose();
     _filterBloc.dispose();
   }

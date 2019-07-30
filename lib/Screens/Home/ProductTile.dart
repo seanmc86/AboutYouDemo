@@ -1,4 +1,5 @@
 import 'package:AboutYouDemo/Helpers/Converters.dart';
+import 'package:AboutYouDemo/Helpers/ImageConfig.dart';
 import 'package:AboutYouDemo/Models/Product.dart';
 import 'package:AboutYouDemo/Screens/Home/TransparentImage.dart';
 import 'package:AboutYouDemo/Styles/Dimensions.dart';
@@ -40,14 +41,6 @@ class ProductTile extends StatelessWidget {
                     bottom: Dimensions.stylePaddingXL),
                 child: FadeInImage.memoryNetwork(
                     placeholder: TransparentImage.kTransparentImage,
-                    //TODO: Strip out hard-coded bits to a central config
-                    image: 'https://cdn.aboutstatic.com/file/' +
-                        '${product.images.first.hash}' +
-                        '?width=400&amp;' +
-                        'height=400&amp;' +
-                        'quality=75&amp;' +
-                        'bg=ffffff00&amp;' +
-                        'brightness=0.96&amp;' +
-                        'trim=1'))));
+                    image: ImageConfig.mainTileImage(product.images.first.hash)))));
   }
 }
