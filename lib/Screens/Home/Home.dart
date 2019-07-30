@@ -71,15 +71,16 @@ class _HomeState extends State<Home> {
                       textAlign: TextAlign.left,
                       style:
                           LayoutThemeContainer.of(context).appbarTitle(theme))),
-              Expanded(child: Container(
-                  color: Constants.mColorThemePrimary[50],
-                  child: Padding(
-                      padding:
-                          EdgeInsets.only(left: Dimensions.stylePaddingXXS),
-                      child: Text(StringLocalizations.appSubtitle,
-                          textAlign: TextAlign.left,
-                          style: LayoutThemeContainer.of(context)
-                              .titleThinBlack(theme)))))
+              Expanded(
+                  child: Container(
+                      color: Constants.mColorThemePrimary[50],
+                      child: Padding(
+                          padding:
+                              EdgeInsets.only(left: Dimensions.stylePaddingXXS),
+                          child: Text(StringLocalizations.appSubtitle,
+                              textAlign: TextAlign.left,
+                              style: LayoutThemeContainer.of(context)
+                                  .titleThinBlack(theme)))))
             ]),
             actions: <Widget>[
               Padding(
@@ -102,6 +103,7 @@ class _HomeState extends State<Home> {
                   bottom: Dimensions.stylePaddingXXS,
                 ),
                 child: FlatButton(
+                    key: Key('opendrawer'),
                     child: Icon(Icons.filter_list,
                         color: Constants.mColorThemePrimary[900]),
                     color: Constants.mColorThemePrimary[50],

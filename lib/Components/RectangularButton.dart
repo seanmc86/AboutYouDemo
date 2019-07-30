@@ -6,11 +6,14 @@ class RectangularButton extends StatelessWidget {
   final Function onPressed;
   final bool colorActive;
   final String title;
+  @override
+  final Key key;
 
   RectangularButton(
       {@required this.onPressed,
       @required this.colorActive,
-      @required this.title});
+      @required this.title,
+      @required this.key});
 
   @override
   Widget build(BuildContext context) {

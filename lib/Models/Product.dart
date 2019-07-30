@@ -25,12 +25,14 @@ class Product {
 
     List<dynamic> imagesList = map['images'] as List;
     this.images =
-        imagesList.map((image) => ProductImage.fromJson(image)).toList();
+        imagesList?.map((image) => ProductImage.fromJson(image))?.toList();
 
     Map<String, dynamic> attributesMap = map['attributes'];
-    this.attributes = ProductAttributes.fromJson(attributesMap);
+    if (attributesMap != null)
+      this.attributes = ProductAttributes.fromJson(attributesMap);
 
     Map<String, dynamic> priceRangeMap = map['priceRange'];
-    this.priceRange = ProductPriceRange.fromJson(priceRangeMap);
+    if (priceRangeMap != null)
+      this.priceRange = ProductPriceRange.fromJson(priceRangeMap);
   }
 }

@@ -14,6 +14,7 @@ class PricingSection extends StatelessWidget {
         builder: (context, priceSnapshot) {
           return Column(children: <Widget>[
             RectangularButton(
+                key: Key('priceup'),
                 colorActive:
                     priceSnapshot.data == null ? false : priceSnapshot.data,
                 title: StringLocalizations.filterPriceHighest,
@@ -22,6 +23,7 @@ class PricingSection extends StatelessWidget {
                         ? appBloc.filterBloc.inPriceFilters.add(true)
                         : appBloc.filterBloc.inPriceFilters.add(null)),
             RectangularButton(
+                key: Key('pricedown'),
                 colorActive:
                     priceSnapshot.data == null ? false : !priceSnapshot.data,
                 title: StringLocalizations.filterPriceLowest,

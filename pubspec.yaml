@@ -20,16 +20,21 @@ dependencies:
   flutter:
     sdk: flutter
   intl: ^0.15.7
+  cupertino_icons: ^0.1.2
   http: ^0.11.3
   rxdart: ^0.21.0
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.2
+  inject:
+    git:
+      url: https://github.com/google/inject.dart.git
+      path: package/inject
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_driver:
+    sdk: flutter
+  mockito: ^4.1.0
+  test: ^1.6.3
 
 
 # For information on the generic Dart part of this file, see the
