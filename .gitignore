@@ -72,3 +72,5 @@
 AboutYouDemo\.zip
 
 ios/Podfile\.lock
+
+pubspec\.lock
