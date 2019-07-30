@@ -8,19 +8,22 @@ import 'package:rxdart/rxdart.dart';
 import 'package:rxdart/subjects.dart';
 
 class ProductBloc implements BlocBase {
-
   // Product list interfaces
-  BehaviorSubject<List<Product>> _productList$ = BehaviorSubject<List<Product>>();
+  BehaviorSubject<List<Product>> _productList$ =
+      BehaviorSubject<List<Product>>();
   Sink<List<Product>> get inProductList => _productList$.sink;
   Stream<List<Product>> get outProductList => _productList$.stream;
 
   // Active Filter interfaces
-  BehaviorSubject<Map<String, dynamic>> _active$ = BehaviorSubject<Map<String, dynamic>>();
+  BehaviorSubject<Map<String, dynamic>> _active$ =
+      BehaviorSubject<Map<String, dynamic>>();
   Sink<Map<String, dynamic>> get inActiveFilters => _active$.sink;
   Stream<Map<String, dynamic>> get outActiveFilters => _active$.stream;
-  
+
   List<Product> _productList = List<Product>();
   int _currentPage = 1;
+  bool loading = false;
+  bool reachedEnd = false;
   Map<String, dynamic> _activeFilters = {};
   ProductAPI productAPI;
 
@@ -32,12 +35,8 @@ class ProductBloc implements BlocBase {
 
   // Pulls products from API and then increments page number for next call, if needed
   void updateProductList() async {
-    List<Product> newProductList = await ProductAPI.fetchProducts(
-      page: _currentPage,
-      perPage: 10,
-      colors: _activeFilters['colors'],
-      sortPrice: _activeFilters['price']
-    );
+    if (loading || reachedEnd) return;
+    loading = true;
 
     State state = await productAPI.fetchProducts(
             page: _currentPage,
@@ -71,6 +70,8 @@ class ProductBloc implements BlocBase {
   Future<void> resetState() async {
     _productList.clear();
     _currentPage = 1;
+    inProductList.add(List<
+        Product>()); // This ensures the screen is cleared before a new filtered list comes in
     await updateProductList();
   }
 

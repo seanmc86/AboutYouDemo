@@ -15,9 +15,9 @@ class ProductAPI {
   static String _formatColorList(List<ColorType> list) {
     String formattedString = '';
     for (var i = 0; i < list.length; i++) {
-      if (i != 0)
-        formattedString = formattedString + '%2C';
-      formattedString = formattedString + StringLocalizations.filterColorCodeMap[list[i]];
+      if (i != 0) formattedString = formattedString + '%2C';
+      formattedString =
+          formattedString + StringLocalizations.filterColorCodeMap[list[i]];
     }
     return formattedString;
   }
@@ -39,8 +39,8 @@ class ProductAPI {
       ? '&filters[color]=' + _formatColorList(colors)
       : '';
     String _priceFilter = sortPrice != null
-      ? '&sort=price&sortDir=' + (sortPrice ? 'desc' : 'asc')
-      : '';
+        ? '&sort=price&sortDir=' + (sortPrice ? 'desc' : 'asc')
+        : '';
 
     Response response = await client.get(
         _baseURL + _urlFilter + _colorFilter + _priceFilter,
@@ -48,6 +48,9 @@ class ProductAPI {
 
     int time = DateTime.now().millisecondsSinceEpoch;
     if (response.statusCode == 200) {
+      // Tried using compute here but it adds an average overhead of 500-700ms just on the decoding/serialization
+      //_productList = await compute(parseData, response.body);
+
       Map<dynamic, dynamic> body = json.decode(response.body);
       try {
         List<dynamic> entities = body['entities'];
@@ -57,6 +60,7 @@ class ProductAPI {
 
         return State<List<Product>>.success(_productList);
       } catch (e) {
+        //TODO: Send off to analytics server
         print(e);
         return State<String>.error('Could not parse products.');
       }
