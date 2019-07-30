@@ -1,6 +1,5 @@
 import 'package:AboutYouDemo/Blocs/AppBloc.dart';
 import 'package:AboutYouDemo/Blocs/BlocProvider.dart';
-import 'package:AboutYouDemo/Blocs/ProductBloc.dart';
 import 'package:flutter/material.dart';
 import 'package:AboutYouDemo/Styles/Constants.dart';
 import 'package:AboutYouDemo/Styles/LayoutTheme.dart';
@@ -38,10 +37,7 @@ Future<void> main() async {
   return runApp(
     BlocProvider<AppBloc>(
       bloc: AppBloc(),
-      child: BlocProvider<ProductBloc>(
-        bloc: ProductBloc(),
-        child: MyApp(),
-      ),
+      child: MyApp(),
     )
   );
 }

@@ -1,3 +1,5 @@
+import 'package:AboutYouDemo/Blocs/AppBloc.dart';
+import 'package:AboutYouDemo/Blocs/BlocProvider.dart';
 import 'package:AboutYouDemo/Styles/Constants.dart';
 import 'package:AboutYouDemo/Helpers/Enums.dart';
 import 'package:AboutYouDemo/Styles/LayoutTheme.dart';
@@ -5,37 +7,42 @@ import 'package:AboutYouDemo/Helpers/StringLocalizations.dart';
 import 'package:flutter/material.dart';
 
 class ColorTile extends StatelessWidget {
-  final String title;
-  final Function onTap;
-  final Color color;
-  final bool selected;
+  final ColorType colorType;
 
-  ColorTile(
-      {this.title, this.onTap, this.color, this.selected});
+  ColorTile({@required this.colorType});
 
   @override
   Widget build(BuildContext context) {
+    final AppBloc appBloc = BlocProvider.of<AppBloc>(context);
     final ThemeData theme = Theme.of(context);
-    return GestureDetector(
-        onTap: onTap,
-        child: Column(children: <Widget>[
-          ClipOval(
-              child: Container(
-            width: 50.0,
-            height: 50.0,
-            color: color,
-            child: Icon(
-              selected
-                ? Icons.check
-                : null,
-              color: color == StringLocalizations.filterColorMap[ColorType.white]
-                ? Constants.materialBlack
-                : Constants.materialWhite
-            )
-          )),
-          Text(title,
-              textAlign: TextAlign.left,
-              style: LayoutThemeContainer.of(context).titleThin(theme)),
-        ]));
+    return StreamBuilder(
+        stream: appBloc.filterBloc.outColorFilters,
+        builder: (context, colorSnapshot) {
+          List<ColorType> colorList = List<ColorType>();
+          if (colorSnapshot.data != null) colorList = colorSnapshot.data;
+          return GestureDetector(
+              onTap: () {
+                colorList.contains(colorType)
+                    ? colorList.remove(colorType)
+                    : colorList.add(colorType);
+                appBloc.filterBloc.inColorFilters.add(colorList);
+              },
+              child: Column(
+                children: <Widget>[
+                ClipOval(
+                    child: Container(
+                        width: 50.0,
+                        height: 50.0,
+                        color: StringLocalizations.filterColorMap[colorType],
+                        child: Icon(
+                            colorList.contains(colorType) ? Icons.check : null,
+                            color: colorType == ColorType.white
+                                ? Constants.materialBlack
+                                : Constants.materialWhite))),
+                Text(StringLocalizations.filterColorStringMap[colorType],
+                    textAlign: TextAlign.left,
+                    style: LayoutThemeContainer.of(context).titleThin(theme)),
+              ]));
+        });
   }
 }

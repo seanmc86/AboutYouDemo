@@ -45,8 +45,9 @@ class FilterBloc implements BlocBase {
 
   @override
   void dispose() {
-    //TODO: Check for another way to dispose of these. If they are disposed here, then closing the drawer
+    //If streams are disposed here, then closing the drawer
     //once leads to an instant dispose and inability to reselect any filters after that.
+    
     //_price$.close();
     //_colors$.close();
   }
