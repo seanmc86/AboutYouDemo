@@ -2,9 +2,15 @@ import 'dart:convert';
 import 'package:AboutYouDemo/Helpers/Enums.dart';
 import 'package:AboutYouDemo/Helpers/StringLocalizations.dart';
 import 'package:AboutYouDemo/Models/Product.dart';
+import 'package:AboutYouDemo/Models/State.dart';
 import 'package:http/http.dart';
 
-abstract class ProductAPI {
+class ProductAPI {
+  final String _baseURL = 'https://api-cloud.aboutyou.de/v1/products';
+  final Map<String, String> _headers = {'Accept': 'application/json'};
+  final Client client;
+
+  ProductAPI(this.client);
 
   static String _formatColorList(List<ColorType> list) {
     String formattedString = '';
@@ -16,24 +22,18 @@ abstract class ProductAPI {
     return formattedString;
   }
 
-  static String _baseURL = 'https://api-cloud.aboutyou.de/v1/products';
-
-  static Future<List<Product>> fetchProducts({int page, int perPage, List<ColorType> colors, bool sortPrice}) async {
+  Future<State> fetchProducts(
+      {int page, int perPage, List<ColorType> colors, bool sortPrice}) async {
     page ??= 1;
     perPage ??= 10;
     colors ??= List<ColorType>();
 
-    Map<String, String> _headers = {
-      'Accept': 'application/json'
-    };
-
-    String _urlFilter = 
-      '?with=attributes%2CpriceRange' +
-      '&page=$page' +
-      '&perPage=$perPage' +
-      '&sortScore=category_scores' +
-      '&sortChannel=etkp' +
-      '&shopId=139';
+    String _urlFilter = '?with=attributes%2CpriceRange' +
+        '&page=$page' +
+        '&perPage=$perPage' +
+        '&sortScore=category_scores' +
+        '&sortChannel=etkp' +
+        '&shopId=139';
 
     String _colorFilter = colors.isNotEmpty
       ? '&filters[color]=' + _formatColorList(colors)
@@ -42,23 +42,33 @@ abstract class ProductAPI {
       ? '&sort=price&sortDir=' + (sortPrice ? 'desc' : 'asc')
       : '';
 
-    Response response = await get(
-      _baseURL + _urlFilter + _colorFilter + _priceFilter,
-      headers: _headers
-    );
+    Response response = await client.get(
+        _baseURL + _urlFilter + _colorFilter + _priceFilter,
+        headers: _headers);
 
-    List<Product> _productList = List<Product>();
+    int time = DateTime.now().millisecondsSinceEpoch;
     if (response.statusCode == 200) {
       Map<dynamic, dynamic> body = json.decode(response.body);
       try {
         List<dynamic> entities = body['entities'];
-        _productList = entities.map((product) => Product.fromJson(product)).toList();
-      //TODO: Create more intelligent error handling per status codes & error type
+        List<Product> _productList =
+            entities.map((product) => Product.fromJson(product)).toList();
+        print('Time calc: ${DateTime.now().millisecondsSinceEpoch - time}');
+
+        return State<List<Product>>.success(_productList);
       } catch (e) {
         print(e);
+        return State<String>.error('Could not parse products.');
       }
+    } else {
+      return State<String>.error('Could not retrieve products.');
     }
+  }
 
-    return _productList;
+  List<Product> parseData(String body) {
+    Map<dynamic, dynamic> parsed = json.decode(body);
+    List<dynamic> entities = parsed['entities'];
+
+    return entities.map((product) => Product.fromJson(product)).toList();
   }
 }

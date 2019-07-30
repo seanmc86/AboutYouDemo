@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:AboutYouDemo/Blocs/BlocProvider.dart';
 import 'package:AboutYouDemo/Models/Product.dart';
+import 'package:AboutYouDemo/Models/State.dart';
 import 'package:AboutYouDemo/Services/ProductAPI.dart';
+import 'package:http/http.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:rxdart/subjects.dart';
 
@@ -20,8 +22,10 @@ class ProductBloc implements BlocBase {
   List<Product> _productList = List<Product>();
   int _currentPage = 1;
   Map<String, dynamic> _activeFilters = {};
+  ProductAPI productAPI;
 
   ProductBloc() {
+    productAPI = ProductAPI(Client());
     updateProductList();
     _active$.listen(_adjustFilters);
   }
@@ -35,11 +39,26 @@ class ProductBloc implements BlocBase {
       sortPrice: _activeFilters['price']
     );
 
-    _currentPage += 1;
+    State state = await productAPI.fetchProducts(
+            page: _currentPage,
+            perPage: 10,
+            colors: _activeFilters['colors'],
+            sortPrice: _activeFilters['price']);
 
-    if (!_productList.contains(newProductList))
-        _productList.addAll(newProductList);
-    inProductList.add(_productList);
+    loading = false;
+    if (state is SuccessState) {
+      _currentPage += 1;
+      if (state.value.isEmpty || state.value.length < 10) {
+        reachedEnd = true;
+      }
+
+      if (!_productList.contains(state.value.first))
+        _productList.addAll(state.value);
+      inProductList.add(state.value);
+
+    } else if (state is ErrorState) {
+      _productList$.addError(state.msg);
+    }
   }
 
   // When new filters are received from the filter stream, reset our product list
